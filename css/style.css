@@ -9,6 +9,71 @@ background-color: green ;
 
 }
 
+#port{
+  width: 80%;
+  height: 20%;
+  background-color: yellow;
+  display: flex;
+  flex-direction: row;
+}
+
+.destroyer{
+  background-color: brown;
+}
+.cruiser{
+  background-color: aqua;
+}
+.battleship{
+  background-color: blueviolet;
+}
+.carrier{
+  background-color: crimson;
+}
+.submarine{
+  background-color: darkorange;
+}
+
+.titanic{
+  background-color: antiquewhite;
+}
+
+.destroyer-preview{
+
+  width: 110px;
+  height: 55px;
+  margin: 6px ;
+}
+.cruiser-preview{
+
+  width: 165px;
+  height: 55px;
+  margin: 6px ;
+}
+.battleship-preview{
+
+  width: 220px;
+  height: 55px;
+  margin: 6px ;
+}
+.carrier-preview{
+
+  width: 275px;
+  height: 55px;
+  margin: 6px ;
+}
+.submarine-preview{
+
+  width: 165px;
+  height: 55px;
+  margin: 6px ;
+}
+
+.titanic-preview{
+   width: 385px;
+  height: 55px;
+  margin: 6px;
+}
+
 margin{
     display: flex;
     font-size: 20px;
