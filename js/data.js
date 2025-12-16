@@ -18,4 +18,4 @@ divEl.classList.add(x+1)
 board2.appendChild(divEl);
 }
 
-// Created 64 div elements in each div with the id board 
+// Created 100 div elements in each div with the id board 
