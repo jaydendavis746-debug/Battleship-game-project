@@ -3,7 +3,8 @@ const battlefield = document.querySelector('#battlefield')
 const flipButton = document.querySelector('#flip')
 const startButton = document.querySelector('#start')
 const timer = document.querySelector('#timer')
-const turn = document.querySelector('turn')
+const turn = document.querySelector('#turn')
+const info = document.querySelector('#info')
 
 
 // ship selection
@@ -131,7 +132,7 @@ if ( valid && notTaken){
 })
 }
 else{
-    if( user === 'player-2') addShipPiece('player-2', ship)
+    if( user === 'player-2') addShipPiece(user, ship)
        else if(user === 'player-1') notDropped = true;
 }
 
@@ -201,3 +202,39 @@ setTimeout(() => {
 })
 
 }
+
+
+let gameOver = false
+let playerTurn
+
+// start Game
+
+const handleClick = (e)=>{
+    
+    if(!gameOver){
+        if(e.target.classList.contains('taken')){
+
+            e.target.classList.add('boom')
+            info.textContent = 'Hit on enemy confirmed'
+        }
+    }
+}
+
+const startWar = ()=>{
+
+if (port.children.length !=0){
+
+info.textContent= ' Deploy all your fleets, private '
+
+}
+
+else{
+    const allFieldBlocks = document.querySelectorAll('#player-2 div')
+    allFieldBlocks.forEach(block => block.addEventListener('click', handleClick))
+}
+
+}
+
+
+startButton.addEventListener('click', startWar)
+
