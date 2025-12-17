@@ -67,19 +67,7 @@ const ships =[destroyer,  cruiser, battleships, carrier, submarine, titanic];
 
 let notDropped;
 
- 
-const addShipPiece = (user, ship, startId) =>{
-   
-    const allFieldBlocks = document.querySelectorAll(`#${user} div`)
-
-    let randomBoolean = Math.random() < 0.5;
-
-    let isHorizontal = user === 'player-1' ? angle === 0 : randomBoolean;
-
-    let randomStartIndex = Math.floor(Math.random() * width * width);
-
-    let startIndex = startId ? startId: randomStartIndex
-
+const handleValidity = (allFieldBlocks, isHorizontal, startIndex, ship)=>{
     let validStart = isHorizontal ? startIndex <= width * width - ship.length ? 
     startIndex: width * width - ship.length:
 
@@ -116,6 +104,24 @@ valid = shipBlocks[0].id < 90 + (width * index + 1)
 
 const notTaken = shipBlocks.every(shipBlock => !shipBlock.classList.contains('taken'))
 
+return{shipBlocks, valid, notTaken}
+
+}
+ 
+const addShipPiece = (user, ship, startId) =>{
+   
+    const allFieldBlocks = document.querySelectorAll(`#${user} div`)
+
+    let randomBoolean = Math.random() < 0.5;
+
+    let isHorizontal = user === 'player-1' ? angle === 0 : randomBoolean;
+
+    let randomStartIndex = Math.floor(Math.random() * width * width);
+
+    let startIndex = startId ? startId: randomStartIndex
+
+  const { shipBlocks, valid, notTaken} = handleValidity(allFieldBlocks, isHorizontal, startIndex, ship)
+
 if ( valid && notTaken){
   shipBlocks.forEach(shipBlock => {
     
@@ -149,6 +155,8 @@ draggedFleet = e.target
 
 const dragOver = (e)=>{
 e.preventDefault()
+const ship = ships[draggedFleet.id]
+highlightArea(e.target.id, ship )
 
 }
 
@@ -173,3 +181,23 @@ allplayer1Blocks.forEach(player1Block =>{
     player1Block.addEventListener('dragover', dragOver)
      player1Block.addEventListener('drop', dropFleet)
 })
+
+// Add highlight
+
+const highlightArea= (startIndex, ship)=>{
+    const allFieldBlocks = document.querySelectorAll('#player-1 div')
+    let isHorizontal = angle === 0
+
+    const {shipBlocks, valid, notTaken} = handleValidity(allFieldBlocks, isHorizontal, startIndex, ship )
+
+if(valid && notTaken)
+
+shipBlocks.forEach(shipBlock =>{
+   shipBlock.classList.add('hover')
+setTimeout(() => {
+    shipBlock.classList.remove('hover')
+}, 500);
+
+})
+
+}

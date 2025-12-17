@@ -26,7 +26,6 @@ box-sizing: border-box;
 }
 
 
-
 #port{
     width: 500px;
     height: 50px;
@@ -94,4 +93,17 @@ box-sizing: border-box;
    width: 60px;
   height: 10px;
   margin: 3px;
+}
+
+.hover{
+  background-color: gray;
+}
+
+.boom{
+  background-color: coral;
+}
+
+
+.empty{
+  background-color: grey;
 }
