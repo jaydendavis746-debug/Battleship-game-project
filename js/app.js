@@ -147,10 +147,8 @@ let draggedFleet
 
 
 const dragStart = (e)=>{
-
-console.log('hello world')
-notDropped = false
-draggedFleet = e.target
+    notDropped = false
+    draggedFleet = e.target
 
 }
 
@@ -205,18 +203,117 @@ setTimeout(() => {
 
 
 let gameOver = false
-let playerTurn
+let player1Turn
+
+
 
 // start Game
 
+
+
+let player1Hits = []
+let payer2Hits  = []
+const player1SunkShips = []
+const player2SunkShips = []
+
+
+
+const player2Go = ()=>{
+    if(!gameOver){
+      turn.textContent = 'Player 2s turn'
+      info.textContent = 'Player 2 is strategizing...'
+
+    setTimeout(() => {
+    let randomGo= Math.floor(Math.random()*width*width)
+    const  allFieldBlocks =  document.querySelectorAll('#player-1 div')
+if (allFieldBlocks[randomGo].classList.contains('taken') &&
+    allFieldBlocks[randomGo].classList.contains('boom')){
+        player2Go()
+        return;
+        } 
+else if (allFieldBlocks[randomGo].classList.contains('taken') &&
+        !allFieldBlocks[randomGo].classList.contains('boom')){
+        
+        allFieldBlocks[randomGo].classList.add('boom')
+        info.textContent = 'Damage sustained from enemy '
+
+    let classes = Array.from(e.target.classList)
+       classes = classes.filter(className => className !== 'boom')
+       classes = classes.filter(className => className !== 'block')
+       classes = classes.filter(className => className !== 'taken')
+       player2Hits.push(...classes)
+       checkScore = ('player-2', player2Hits, player2SunkShips)
+
+             } 
+else{
+     info.textContent = 'Enemy Missed '
+     allFieldBlocks[randomGo].classList.add('empty')
+}
+      }, 3000)
+
+      setTimeout(()=>{
+      player1Turn = true
+      turn.textContent = 'Player 1s turn'
+      info.textContent = 'Player 1 strategizes...'
+    const  allFieldBlocks =  document.querySelectorAll('#player-2 div')
+    allFieldBlocks.forEach(block => block.addEventListener('click', handleClick))
+      },6000)
+
+
+    }
+}
+
+const checkScore = (user, userHits, userSunkShips)=>{
+
+const checkShip = (shipName, shipLength)=>{
+
+if( userHits.filter(storedShipName => storedShipName === shipName).length === shipLength );{
+
+    info.textContent = ` ${user}'s ${shipName} has sunken `
+}
+
+}
+
+checkShip('destroyer', 2)
+checkShip('cruiser', 3)
+checkShip('battleship', 4)
+checkShip('carrier', 5)
+checkShip('submarine', 3)
+checkShip('titanic', 6)
+
+console.log('player1Hits', player1Hits)
+console.log('player1SunkShips', player1SunkShips)
+
+}
+
 const handleClick = (e)=>{
     
-    if(!gameOver){
-        if(e.target.classList.contains('taken')){
+  if(!gameOver){
+    if(e.target.classList.contains('taken')){
 
-            e.target.classList.add('boom')
-            info.textContent = 'Hit on enemy confirmed'
+        e.target.classList.add('boom')
+        info.textContent = 'Hit on enemy confirmed'
+        let classes = Array.from(e.target.classList)
+       classes = classes.filter(className => className !== 'boom')
+       classes = classes.filter(className => className !== 'block')
+       classes = classes.filter(className => className !== 'taken')
+
+        player1Hits.push(...classes)
+        checkScore('player-1', player1Hits, player1SunkShips)
+        
+  
         }
+        
+if(! e.target.classList.contains('taken')){
+
+    info.textContent = ' This was a miss, try again Private'
+    e.target.classList.add('empty')
+}
+
+player1Turn = false
+const allFieldBlocks = document.querySelectorAll('#player-2 div')
+allFieldBlocks.forEach(block => block.replaceWith(block.cloneNode(true)))
+setTimeout(player2Go,3000)
     }
 }
 
