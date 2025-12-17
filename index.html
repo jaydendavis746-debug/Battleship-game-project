@@ -4,34 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="js/app.js"></script>
-    <script defer src="js/data.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <title>Battleships</title>
 </head>
 <body>
   <margin>
-        <p id="p1board"> player 1's board</p>
-        <p id="#turn"> P1's move </p>
+        <p id="turn"> P1's move </p>
         <p id="timer">20s</p>
-        <p id="p2board">player 2's board</p>
-
    </margin>
-<div id="battlefield">
-                
-        <div id="board1"></div>
-        <div id="board2"></div>
 
-</div>
+<div id="battlefield"></div>
+
 
 <div id="port"> 
 
-<div class=" destroyer destroyer-preview "></div>
-<div class=" cruiser cruiser-preview"></div>
-<div class=" battleship battleship-preview"></div>
-<div class=" carrier carrier-preview "></div>
-<div class=" submarine submarine-preview"></div>
-<div class="titanic titanic-preview" ></div>
+<div class=" destroyer destroyer-preview " draggable="true"></div>
+<div class=" cruiser cruiser-preview" draggable="true"></div>
+<div class=" battleship battleship-preview" draggable="true"></div>
+<div class=" carrier carrier-preview " draggable="true"></div>
+<div class=" submarine submarine-preview" draggable="true"></div>
+<div class="titanic titanic-preview" draggable="true" ></div>
 </div>
+
+<button id="flip">Flip</button>
+<button id="start">Start</button>
 
 </body>
 </html>
