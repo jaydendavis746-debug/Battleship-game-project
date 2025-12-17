@@ -51,9 +51,15 @@ for(let x = 0; x< width * width; x++ ){
 
  class Ship{
     constructor(name , length){
-        thid.name= name
+        this.name= name
         this.length = length
     }
  }
  
- const destroyer= new Ship('destroyer', 2)
+ const destroyer = new Ship('destroyer', 2)
+ const submarine = new Ship('submarine', 3)
+ const cruiser = new Ship('cruiser',3)
+ const battleships = new Ship('battleship',4)
+ const carrier = new Ship('carrier', 5)
+ const titanic = new Ship('titanic', 7)
+ 
