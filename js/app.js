@@ -46,3 +46,14 @@ for(let x = 0; x< width * width; x++ ){
  
  createBoard('pink', 'player 1');
  createBoard('red', 'player 2'); 
+
+ // createing ships
+
+ class Ship{
+    constructor(name , length){
+        thid.name= name
+        this.length = length
+    }
+ }
+ 
+ const destroyer= new Ship('destroyer', 2)
