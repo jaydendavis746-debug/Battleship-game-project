@@ -212,7 +212,7 @@ let player1Turn
 
 
 let player1Hits = []
-let payer2Hits  = []
+let player2Hits  = []
 const player1SunkShips = []
 const player2SunkShips = []
 
@@ -237,7 +237,7 @@ else if (allFieldBlocks[randomGo].classList.contains('taken') &&
         allFieldBlocks[randomGo].classList.add('boom')
         info.textContent = 'Damage sustained from enemy '
 
-    let classes = Array.from(e.target.classList)
+    let classes = Array.from(allFieldBlocks[randomGo].classList)
        classes = classes.filter(className => className !== 'boom')
        classes = classes.filter(className => className !== 'block')
        classes = classes.filter(className => className !== 'taken')
@@ -270,6 +270,10 @@ const checkShip = (shipName, shipLength)=>{
 if( userHits.filter(storedShipName => storedShipName === shipName).length === shipLength );{
 
     info.textContent = ` ${user}'s ${shipName} has sunken `
+
+if(user === 'player-1'){
+    player1Hits=  userHits.filter(storedShipName => storedShipName === shipName)
+
 }
 
 }
@@ -299,6 +303,7 @@ const handleClick = (e)=>{
        classes = classes.filter(className => className !== 'taken')
 
         player1Hits.push(...classes)
+        
         checkScore('player-1', player1Hits, player1SunkShips)
         
   
