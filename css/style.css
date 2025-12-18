@@ -95,15 +95,26 @@ box-sizing: border-box;
   margin: 3px;
 }
 
+
+#player-2 .destroyer,
+#player-2 .cruiser,
+#player-2 .battleship,
+#player-2 .carrier,
+#player-2 .submarine,
+#player-2 .titanic {
+
+  background-color: yellow;
+}
+
 .hover{
   background-color: gray;
 }
 
 .boom{
-  background-color: orangered;
+  background-color: orangered !important;
 }
 
 
 .empty{
-  background-color: grey;
+  background-color: grey !important;
 }

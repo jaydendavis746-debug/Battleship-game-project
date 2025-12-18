@@ -295,6 +295,14 @@ checkShip('titanic', 6);
 console.log('player1Hits', player1Hits)
 console.log('player1SunkShips', player1SunkShips)
 
+if(player1SunkShips === 6){
+    info.textContent = ' All enemies Fleets has beeen decimated. Good work Private, YOU WON!!'
+}
+
+if(player2SunkShips === 6){
+    info.textContent = ' All of your Fleets has beeen decimated. Unlucky Private, YOU LOST!!'
+}
+
 }
 
 const handleClick = (e)=>{
@@ -331,7 +339,7 @@ setTimeout(player2Go,3000)
 }
 
 const startWar = ()=>{
-
+if( player1Turn === undefined){
 if (port.children.length !=0){
 
 info.textContent= ' Deploy all your fleets, private '
@@ -341,10 +349,14 @@ info.textContent= ' Deploy all your fleets, private '
 else{
     const allFieldBlocks = document.querySelectorAll('#player-2 div')
     allFieldBlocks.forEach(block => block.addEventListener('click', handleClick))
+
+    player1Turn = true
+    turn.textContent = 'Player 1s turn'
+    info.textContent = 'Let the war Begin'
 }
 
 }
-
+}
 
 startButton.addEventListener('click', startWar)
 
