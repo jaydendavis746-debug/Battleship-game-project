@@ -271,14 +271,16 @@ if( userHits.filter(storedShipName => storedShipName === shipName).length === sh
     
     {
 
-    info.textContent = `${user}'s ${shipName} has sunken `
-
     if(user === 'player-1'){
         player1Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
+
+        info.textContent = ` Player 2's ${shipName} has sunken `
     }
 
  if(user === 'player-2'){
         player2Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
+
+        info.textContent = `Player 1's ${shipName} has sunken `
     }
       userSunkShips.push(shipName)
 }
@@ -297,10 +299,12 @@ console.log('player1SunkShips', player1SunkShips)
 
 if(player1SunkShips === 6){
     info.textContent = ' All enemies Fleets has beeen decimated. Good work Private, YOU WON!!'
+    gameOver = true
 }
 
 if(player2SunkShips === 6){
     info.textContent = ' All of your Fleets has beeen decimated. Unlucky Private, YOU LOST!!'
+    gameOver = true
 }
 
 }
