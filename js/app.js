@@ -242,7 +242,7 @@ else if (allFieldBlocks[randomGo].classList.contains('taken') &&
        classes = classes.filter(className => className !== 'block')
        classes = classes.filter(className => className !== 'taken')
        player2Hits.push(...classes)
-       checkScore = ('player-2', player2Hits, player2SunkShips)
+       checkScore('player-2', player2Hits, player2SunkShips)
 
              } 
 else{
@@ -267,23 +267,30 @@ const checkScore = (user, userHits, userSunkShips)=>{
 
 const checkShip = (shipName, shipLength)=>{
 
-if( userHits.filter(storedShipName => storedShipName === shipName).length === shipLength );{
+if( userHits.filter(storedShipName => storedShipName === shipName).length === shipLength )
+    
+    {
 
-    info.textContent = ` ${user}'s ${shipName} has sunken `
+    info.textContent = `${user}'s ${shipName} has sunken `
 
-if(user === 'player-1'){
-    player1Hits=  userHits.filter(storedShipName => storedShipName === shipName)
+    if(user === 'player-1'){
+        player1Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
+    }
 
+ if(user === 'player-2'){
+        player2Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
+    }
+      userSunkShips.push(shipName)
 }
 
 }
 
-checkShip('destroyer', 2)
-checkShip('cruiser', 3)
-checkShip('battleship', 4)
-checkShip('carrier', 5)
-checkShip('submarine', 3)
-checkShip('titanic', 6)
+checkShip('destroyer', 2);
+checkShip('cruiser', 3);
+checkShip('battleship', 4);
+checkShip('carrier', 5);
+checkShip('submarine', 3);
+checkShip('titanic', 6);
 
 console.log('player1Hits', player1Hits)
 console.log('player1SunkShips', player1SunkShips)
@@ -297,6 +304,7 @@ const handleClick = (e)=>{
 
         e.target.classList.add('boom')
         info.textContent = 'Hit on enemy confirmed'
+
         let classes = Array.from(e.target.classList)
        classes = classes.filter(className => className !== 'boom')
        classes = classes.filter(className => className !== 'block')
