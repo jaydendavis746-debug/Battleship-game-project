@@ -1,5 +1,43 @@
 
 
+body{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+.splash-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 66vh;
+}
+
+.splash-title{
+  font-size: 10rem;
+
+}
+
+
+
+
+.btn{
+   font-size: 2rem ;
+  cursor: pointer;
+    text-decoration: none;
+}
+
+
+.player{
+  display: flex;
+  flex-direction: row;
+  padding: 0px 7px;
+}
+.connected{
+  padding: 0px 10px;
+}
 
 #battlefield{
   width: 700px;
@@ -15,6 +53,7 @@ width: 300px;
 display: flex;
 flex-wrap: wrap;
 flex-direction: row;
+justify-content: center;
   
 }
 
@@ -34,6 +73,7 @@ box-sizing: border-box;
     display:flex;
     flex-direction: row;
     align-items: center;
+    
 }
 
 

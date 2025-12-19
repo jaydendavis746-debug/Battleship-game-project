@@ -3,47 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="js/app.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <title>Battleships</title>
 </head>
 <body>
-  <button id="singleplayerbutton">Single player</button>
-  <button id="multiplayerbutton">multiplayer</button>
+    <div class='splash-container'> 
+      <h1 class="splash-title">Battleships</h1>
+        <div> 
+          <button ><a href="/singleplayer.html" class="btn">Single Player</a></button>
 
-  <div class = "player p1">
-    Player 1
-    <div class="connected">connected <span></span></div>
-     <div class="ready">Ready <span></span></div>
-  </div>
+          <button ><a href="/multiplayer.html" class="btn">Multiplayer</a></button>
 
- <div class = "player p2">
-    Player 2
-    <div class="connected">connected <span></span></div>
-     <div class="ready">Ready <span></span></div>
-  </div>
-
-  <margin>
-       <p id="info" ></p>
-        <p id="turn"></p>
-   </margin>
-
-<div id="battlefield"></div>
-
-
-<div id="port"> 
-
-<div id = "0" class=" destroyer destroyer-preview storedship" draggable= "true"></div>
-<div id = "1" class=" cruiser cruiser-preview storedship " draggable="true"></div>
-<div id = "2" class="  battleship battleship-preview storedship" draggable="true"></div>
-<div id = "3" class=" carrier carrier-preview storedship" draggable="true"></div>
-<div id = "4" class=" submarine submarine-preview storedship" draggable="true"></div>
-<div id = "5" class="titanic titanic-preview storedship" draggable="true" ></div>
-</div>
-
-<button id="flip">Flip</button>
-<button id="start">Start</button>
-
+        </div>
+    </div>
+  <img src class="splash=battleship-image"></img>
 </body>
 </html>

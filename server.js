@@ -1,93 +1,74 @@
 const express = require('express')
 const path = require('path')
 const http = require('http')
-const PORT = process.env.PORT || 3000
 const socketIo = require('socket.io')
+
+const PORT = process.env.PORT || 3000
+
 const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
 
-// set static folder
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')))
 
-app.use(express.static(path.join(__dirname, 'public')));
+server.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+)
 
-// start server 
+// Track players: null | false (connected) | true (ready)
+const connections = [null, null]
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT} `));
+io.on('connection', socket => {
+  let playerIndex = -1
 
-// Hnadle a socket connection request from web client
-
-const connections= [null, null]
-
-io.on('connection', socket =>{                  // socket: the client that is being connected 
-//console.log('New WS Connection')  
-    
-    // find an available player number 
-
-let playerIndex = -1;
-for(const i in connections){
-    if(connections[i] === null){
-        playerIndex = i ;
-        break;
+  // Assign player slot
+  for (let i = 0; i < connections.length; i++) {
+    if (connections[i] === null) {
+      playerIndex = i
+      break
     }
-}
-// Tell the connecting client what player they are
-socket.emit('player-number', playerIndex)
+  }
 
-console.log(`player ${playerIndex} has connected`) ;
+  socket.emit('player-number', playerIndex)
 
-// ignore player 3
-if (playerIndex === -1){
-    return;
-}
+  if (playerIndex === -1) return
 
-connections[playerIndex] = false;
+  console.log(`Player ${playerIndex} connected`)
+  connections[playerIndex] = false
 
-// Tell everyone what player number just connected 
+  // Notify others
+  socket.broadcast.emit('player-connection', playerIndex)
 
-socket.broadcast.emit('Player-Connection', playerIndex)
-
-// hnadle disconnect
-socket.on('disconnect', () => {
+  // Handle disconnect
+  socket.on('disconnect', () => {
     console.log(`Player ${playerIndex} disconnected`)
     connections[playerIndex] = null
-    
-    // Tell everyone what player number just disconnected
     socket.broadcast.emit('player-connection', playerIndex)
-})
+  })
 
-// On Ready
- 
-socket.on('player-ready',() =>{
-    socket.broadcast.emit('enemy-ready'. playerIndex)
+  // ✅ READY (FIXED)
+  socket.on('player-ready', () => {
     connections[playerIndex] = true
+    socket.broadcast.emit('enemy-ready', playerIndex)
+  })
+
+  // Check players
+  socket.on('check-players', () => {
+    const players = connections.map(c =>
+      c === null
+        ? { connected: false, ready: false }
+        : { connected: true, ready: c }
+    )
+    socket.emit('check-players', players)
+  })
+
+  socket.on('fire', id => {
+    socket.broadcast.emit('fire', id)
+  })
+
+  // Relay fire result
+  socket.on('fire-reply', data => {
+    socket.broadcast.emit('fire-reply', data)
+  })
 })
-// check players connections
-socket.on('check-players', () => {
-    const players = []
-    for (const i in connections){
-        connections[i]=== null ? players.push({connected: false, ready: false}):
-        players.push({connected: true, ready: connections[i]})
-    }
-    socket.emit('check-players',players)
-})
-
-// On fire recieved
-socket.on('fire', id => {
-    console.log(`shot fired from ${playerIndex} `, id)
-
-    // Emit the move to the other player
-    socket.emit('fire', id)
-})
-
-// on fire reply
-
-socket.on('fire-reply', blocks =>{
-    console.log(blocks)
-
-    //forward the reply to the other player
-    socket.broadcast.emit('fire-reply', blocks )
-})
-
-})
-
