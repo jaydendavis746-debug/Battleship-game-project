@@ -627,15 +627,26 @@ const resetWar = () => {
   })
 
   // ----- RESTORE SHIPS -----
-  port.textContent = ''
-  ships.forEach((ship, index) => {
-    const shipDiv = document.createElement('div')
-    shipDiv.classList.add('storedship')
-    shipDiv.id = index
-    shipDiv.draggable = true
-    shipDiv.addEventListener('dragstart', dragStart)
-    port.appendChild(shipDiv)
-  })
+port.innerHTML = ''
+angle = 0
+
+ships.forEach((ship, index) => {
+  const shipDiv = document.createElement('div')
+
+  shipDiv.classList.add(
+    'storedship',
+    ship.name,
+    `${ship.name}-preview`
+  )
+
+  shipDiv.id = index
+  shipDiv.draggable = true
+  shipDiv.style.transform = 'rotate(0deg)'
+
+  shipDiv.addEventListener('dragstart', dragStart)
+  port.appendChild(shipDiv)
+})
+
 
   
   if (gameMode === 'singlePlayer') {
