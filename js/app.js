@@ -605,7 +605,7 @@ else {
 
 }
 const resetWar = () => {
-  // ----- RESET FLAGS -----
+ 
   gameOver = false
   ready = false
   allShipsPlaced = false
@@ -617,17 +617,14 @@ const resetWar = () => {
   player1SunkShips.length = 0
   player2SunkShips.length = 0
 
-  // ----- RESET UI -----
   info.textContent = 'Place your fleets'
   turn.textContent = ''
 
-  // ----- CLEAR BOARDS -----
   document.querySelectorAll('#player-1 div, #player-2 div').forEach(block => {
     block.className = 'block'
   })
 
-  // ----- RESTORE SHIPS -----
-port.innerHTML = ''
+port.textContent = ''
 angle = 0
 
 ships.forEach((ship, index) => {
@@ -641,7 +638,7 @@ ships.forEach((ship, index) => {
 
   shipDiv.id = index
   shipDiv.draggable = true
-  shipDiv.style.transform = 'rotate(0deg)'
+  
 
   shipDiv.addEventListener('dragstart', dragStart)
   port.appendChild(shipDiv)
