@@ -5,6 +5,185 @@ const startButton = document.querySelector('#start')
 const timer = document.querySelector('#timer')
 const turn = document.querySelector('#turn')
 const info = document.querySelector('#info')
+const singlePlayerbtn = document.querySelector('#singleplayerbutton')
+const multiPlayerbtn = document.querySelector('#multiplayerbutton')
+
+
+
+// Variables 
+let gameMode = '';
+let playerNum = 0;
+let ready = false;
+let allShipsPlaced = false
+let shotFired = -1
+let currentPlayer = 'user'
+let socket
+let playersReady = [false, false]
+
+
+ 
+const getMyBoard = () => '#player-1 div'
+const getEnemyBoard = () => '#player-2 div'
+
+
+
+
+// Multiplayer
+
+const startMultiPlayer = () => {
+     
+    // get your player number
+     gameMode = 'multiPlayer'
+
+     socket = io();
+
+    socket.on('player-number', num =>{
+    if(num === -1){
+        info.textContent = ' Sorry, server is currently full. Please try again later,'
+    }
+    else {
+        playerNum = parseInt(num)  
+        
+        // Get other player status
+        socket.emit('check-players')
+    }
+})
+ 
+// Another player connected or disconneted
+socket.on('player-connection', num =>{ 
+    console.log(`Player number ${num} has connected or disconneted `)
+    playerConnectedOrDisconnected(num)
+
+})  
+
+// on enemy ready
+
+socket.on('enemy-ready', num => {
+  playerReady(num)
+  startWarMulti(socket)
+})
+
+
+
+// Check player status
+
+socket.on('check-players', players => {
+  players.forEach((p, i) => {
+    if (p.connected) {
+      playerConnectedOrDisconnected(i)
+    }
+
+    playersReady[i] = p.ready
+    if (p.ready) {
+      playerReady(i)
+    }
+  })
+
+  startWarMulti()
+})
+
+
+// ready button click
+ startButton.onclick = () => {
+  if (!allShipsPlaced) {
+    info.textContent = 'Deploy all your fleets, private'
+    return
+  }
+
+  if (!ready) {
+    ready = true
+    playersReady[playerNum] = true
+    socket.emit('player-ready')
+    playerReady(playerNum)
+  }
+
+  startWarMulti()
+}
+
+
+// setup event listeners for firing 
+const getEnemyBoardSelector = () => '#player-2 div'
+
+
+
+const enableMultiplayerFiring = () => {
+  const enemyBlocks = document.querySelectorAll('#player-2 div')
+
+  enemyBlocks.forEach(block => {
+    block.replaceWith(block.cloneNode(true))
+  })
+
+  document.querySelectorAll('#player-2 div').forEach(block => {
+    block.onclick = () => {
+      if (
+        gameMode === 'multiPlayer' &&
+        currentPlayer === 'user' &&
+        ready &&
+        !gameOver &&
+        !block.classList.contains('boom') &&
+        !block.classList.contains('empty')
+      ) {
+        socket.emit('fire', Number(block.id))
+        currentPlayer = 'enemy'
+        startWarMulti(socket)
+      }
+    }
+  })
+}
+
+
+
+
+
+
+// On Fire Recieved
+
+socket.on('fire', id => {
+
+  currentPlayer = 'enemy'
+  startWarMulti()
+})
+
+
+
+// On Fire reply recieved
+socket.on('fire-reply', ({ id, result }) => {
+  const enemyBlocks = document.querySelectorAll(getEnemyBoardSelector())
+  const block = enemyBlocks[id]
+
+  if (result === 'hit') {
+    block.classList.add('boom')
+  } else {
+    block.classList.add('empty')
+  }
+
+  currentPlayer = 'user'
+  startWarMulti()
+})
+
+
+
+ const playerConnectedOrDisconnected = (num) => {
+
+        let player = `.p${parseInt(num) + 1 }`
+        document.querySelector(`${player} .connected span`).classList.add('green')
+        if(parseInt(num) === playerNum)
+            document.querySelector(player).style.fontWeight = 'bold'
+        
+    }
+  
+
+}
+
+
+//single player
+const startSinglePlayer = () => {
+  gameMode = 'singlePlayer'
+
+  ships.forEach(ship => addShipPiece('player-2', ship))
+
+  startButton.addEventListener('click', startWarSingle)
+}
 
 
 // ship selection
@@ -69,13 +248,17 @@ const ships =[destroyer,  cruiser, battleships, carrier, submarine, titanic];
 let notDropped;
 
 const handleValidity = (allFieldBlocks, isHorizontal, startIndex, ship)=>{
-    let validStart = isHorizontal ? startIndex <= width * width - ship.length ? 
-    startIndex: width * width - ship.length:
+   let validStart = isHorizontal
+  ? (startIndex <= width * width - ship.length
+      ? startIndex
+      : width * width - ship.length)
+      : (startIndex <= width * width - width * ship.length
+      ? startIndex
+      : startIndex - ship.length * width + width);
 
-    //handle vertical
 
- startIndex <= width * width - width*ship.length ? startIndex: 
- startIndex - ship.length * width + width;
+
+
 
    let shipBlocks= [];
 
@@ -139,7 +322,7 @@ else{
 }
 
 
-ships.forEach(ship => addShipPiece('player-2', ship));
+
 
 // drag player ships
 
@@ -167,9 +350,12 @@ const dropFleet = (e)=>{
     if( !notDropped){
         draggedFleet.remove()
     }
-
+if (!port.querySelector('.storedship')){
+    allShipsPlaced = true
+    
+console.log(allShipsPlaced);
 }
-
+}
 const portFleets = Array.from(port.children)
 
 portFleets.forEach(portFleet => portFleet.addEventListener('dragstart', dragStart))
@@ -203,7 +389,7 @@ setTimeout(() => {
 
 
 let gameOver = false
-let player1Turn
+
 
 
 
@@ -218,50 +404,59 @@ const player2SunkShips = []
 
 
 
-const player2Go = ()=>{
+const enemyGo = (blocks)=>{
+    
+
+    if (gameMode === 'multiPlayer') return
     if(!gameOver){
-      turn.textContent = 'Player 2s turn'
+      turn.textContent = ' Enemies Go'
       info.textContent = 'Player 2 is strategizing...'
-
-    setTimeout(() => {
-    let randomGo= Math.floor(Math.random()*width*width)
-    const  allFieldBlocks =  document.querySelectorAll('#player-1 div')
-if (allFieldBlocks[randomGo].classList.contains('taken') &&
-    allFieldBlocks[randomGo].classList.contains('boom')){
-        player2Go()
+      
+      setTimeout(() => {
+ 
+  
+    blocks = Math.floor(Math.random()*width*width)
+    
+    const allFieldBlocks =  document.querySelectorAll('#player-1 div')
+if (allFieldBlocks[blocks].classList.contains('taken') &&
+    allFieldBlocks[blocks].classList.contains('boom')){
+        enemyGo()
         return;
-        } 
-else if (allFieldBlocks[randomGo].classList.contains('taken') &&
-        !allFieldBlocks[randomGo].classList.contains('boom')){
+    }
+    
+if (allFieldBlocks[blocks].classList.contains('taken') &&
+        !allFieldBlocks[blocks].classList.contains('boom')){
         
-        allFieldBlocks[randomGo].classList.add('boom')
+        allFieldBlocks[blocks].classList.add('boom')
         info.textContent = 'Damage sustained from enemy '
+        
 
-    let classes = Array.from(allFieldBlocks[randomGo].classList)
+    let classes = Array.from(allFieldBlocks[blocks].classList)
        classes = classes.filter(className => className !== 'boom')
        classes = classes.filter(className => className !== 'block')
        classes = classes.filter(className => className !== 'taken')
        player2Hits.push(...classes)
        checkScore('player-2', player2Hits, player2SunkShips)
+        }
+    
 
-             } 
-else{
+    else {
      info.textContent = 'Enemy Missed '
-     allFieldBlocks[randomGo].classList.add('empty')
-}
-      }, 3000)
+     allFieldBlocks[blocks].classList.add('empty')
+       }
+      }, 1500)
 
       setTimeout(()=>{
-      player1Turn = true
-      turn.textContent = 'Player 1s turn'
+      currentPlayer = 'user'
+      turn.textContent = ' Your Go'
       info.textContent = 'Player 1 strategizes...'
     const  allFieldBlocks =  document.querySelectorAll('#player-2 div')
     allFieldBlocks.forEach(block => block.addEventListener('click', handleClick))
-      },6000)
-
-
-    }
+      },4000)
+    
+ }
 }
+
 
 const checkScore = (user, userHits, userSunkShips)=>{
 
@@ -274,13 +469,13 @@ if( userHits.filter(storedShipName => storedShipName === shipName).length === sh
     if(user === 'player-1'){
         player1Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
 
-        info.textContent = ` Player 2's ${shipName} has sunken `
+        info.textContent = ` Enemies ${shipName} has sunken `
     }
 
  if(user === 'player-2'){
         player2Hits=  userHits.filter(storedShipName => storedShipName !== shipName)
 
-        info.textContent = `Player 1's ${shipName} has sunken `
+        info.textContent = ` Your ${shipName} has sunken `
     }
       userSunkShips.push(shipName)
 }
@@ -297,12 +492,12 @@ checkShip('titanic', 6);
 console.log('player1Hits', player1Hits)
 console.log('player1SunkShips', player1SunkShips)
 
-if(player1SunkShips === 6){
+if(player1SunkShips.length === 6){
     info.textContent = ' All enemies Fleets has beeen decimated. Good work Private, YOU WON!!'
     gameOver = true
 }
 
-if(player2SunkShips === 6){
+if(player2SunkShips.length === 6){
     info.textContent = ' All of your Fleets has beeen decimated. Unlucky Private, YOU LOST!!'
     gameOver = true
 }
@@ -310,7 +505,7 @@ if(player2SunkShips === 6){
 }
 
 const handleClick = (e)=>{
-    
+    if (gameMode === 'multiPlayer') return
   if(!gameOver){
     if(e.target.classList.contains('taken')){
 
@@ -335,15 +530,53 @@ if(! e.target.classList.contains('taken')){
     e.target.classList.add('empty')
 }
 
-player1Turn = false
+currentPlayer = 'enemy'
+
 const allFieldBlocks = document.querySelectorAll('#player-2 div')
 allFieldBlocks.forEach(block => block.replaceWith(block.cloneNode(true)))
-setTimeout(player2Go,3000)
+if (gameMode === 'singlePlayer') {
+  setTimeout(enemyGo, 3000)
+}
+
     }
 }
 
-const startWar = ()=>{
-if( player1Turn === undefined){
+// multi player game logic
+
+const startWarMulti = () => {
+  if (gameOver) return
+
+ if (!playersReady.every(r => r)) {
+  info.textContent = 'Waiting for both players to be ready...'
+  return
+}
+
+
+  if (!window.gameStarted) {
+    window.gameStarted = true
+    currentPlayer = playerNum === 0 ? 'user' : 'enemy'
+  }
+
+  if (currentPlayer === 'user') {
+    turn.textContent = 'Your Go'
+    enableMultiplayerFiring()
+  } else {
+    turn.textContent = "Enemy's Go"
+  }
+}
+
+
+
+
+
+const playerReady = (num)=>{
+    let player = `.p${parseInt(num) + 1}`
+    document.querySelector(`${player} .ready span`).classList.add('green')
+}
+
+// single player game logic 
+const startWarSingle = ()=>{
+//if( currentPlayer === ''){
 if (port.children.length !=0){
 
 info.textContent= ' Deploy all your fleets, private '
@@ -354,13 +587,18 @@ else{
     const allFieldBlocks = document.querySelectorAll('#player-2 div')
     allFieldBlocks.forEach(block => block.addEventListener('click', handleClick))
 
-    player1Turn = true
-    turn.textContent = 'Player 1s turn'
+   currentPlayer = 'user'
+    turn.textContent = ' Your Go'
     info.textContent = 'Let the war Begin'
 }
 
-}
+//}
 }
 
-startButton.addEventListener('click', startWar)
 
+// select player mode
+
+singlePlayerbtn.addEventListener('click', startSinglePlayer)
+multiPlayerbtn.addEventListener('click', startMultiPlayer)
+
+ 
