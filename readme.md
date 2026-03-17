@@ -5,7 +5,9 @@
 A classic **Battleship game** built with **HTML, CSS, and vanilla JavaScript**, featuring a fully custom drag‑and‑drop ship placement system, ship rotation, turn‑based gameplay, and a CPU opponent. The project also includes an experimental online multiplayer mode built with WebSockets, showcasing early exploration into real‑time game logic.
 
 This project focuses on **pure JavaScript logic**, **DOM manipulation**, and **game state management** — no external libraries were used for drag‑and‑drop, rotation, or CPU behaviour.
-
+---
+Play the game here:  
+👉  [Battleships](https://jaydendavis746-debug.github.io/Battleship-game-project)
 ---
 
 ## 🎮 Features
@@ -76,7 +78,7 @@ battleship/
 │
 ├── js/
 
----
+```
 
 ## 🚀 How to Play
 
@@ -91,10 +93,8 @@ battleship/
 
 ---
 
-## 🌐 Deployment
 
-Play the game here:  
-👉  [Battleships](https://jaydendavis746-debug.github.io/Battleship-game-project)
+
 
 
 ---
