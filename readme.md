@@ -94,7 +94,7 @@ battleship/
 ## 🌐 Deployment
 
 Play the game here:  
-👉 [battleships](https://jaydendavis746-debug.github.io/Battleship-game-project/)  
+👉 [Battleships](https://jaydendavis746-debug.github.io/Battleship-game-project)
 
 
 ---
