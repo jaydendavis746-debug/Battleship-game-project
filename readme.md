@@ -1,4 +1,5 @@
 
+<img width="1048" height="662" alt="battleships" src="https://github.com/user-attachments/assets/ef8a3ff7-b0d7-4c64-890e-905b0e154133" />
 
 # 🚢 Battleship — JavaScript Strategy Game
 
